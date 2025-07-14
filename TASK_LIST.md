@@ -26,8 +26,63 @@
   - Added pull request template
   - Created REPOSITORY_SETUP.md with instructions for GitHub setup
   - All code-side repository setup complete
+- [x] Sprint 2: Material3 theme scaffolding (Issue #6)
+  - Implemented Color.kt, Type.kt, Theme.kt, Shape.kt, and Previews.kt
+  - Applied Material3 color scheme based on ChatGPT's specifications
+  - Fixed ktlint formatting issues
+- [x] Sprint 2: Navigation Compose setup (Issue #7)
+  - Created NavRoutes sealed class with route definitions
+  - Implemented RootNavHost with animated transitions
+  - Created placeholder screens: SplashScreen, CheckInScreen, TimelineScreen
+  - Integrated navigation into MainActivity
+- [x] Sprint 2: CheckInUiState contract (Issue #8)
+  - Created CheckInUiState sealed interface with all states
+  - Created CheckInEvent sealed interface for user interactions
+  - Added Prompt data class
+  - Created state machine documentation
+- [x] Sprint 2: Hilt DI Module (Issue #11)
+  - Set up Hilt dependency injection framework
+  - Created MoodJournalApp with @HiltAndroidApp
+  - Created AppModule with all singleton providers
+  - Created missing files: MoodDatabase, PromptRepository, Entry, EntryDao, Converters
+  - Added kotlinx.serialization for JSON parsing
+  - Created HiltTestRunner and basic injection test
+- [x] Sprint 2: Check-in ViewModel & Screen (Issue #9)
+  - Implemented CheckInViewModel with full state management
+  - Built complete CheckInScreen UI with mood selector
+  - Added note input field and tag selection
+  - Integrated with Hilt dependency injection
+  - Added test tags for UI testing
+- [x] Sprint 2: Timeline List Composable (Issue #10)
+  - Created TimelineViewModel with Flow of entries
+  - Built TimelineScreen with LazyColumn
+  - Added smart date formatting (Today, Yesterday, etc.)
+  - Added empty state handling
+  - Implemented mood indicator circles
+- [x] Sprint 2: Espresso integration test (Issue #12)
+  - Added espresso test dependencies
+  - Added test tags to UI components
+  - Created CheckInFlowTest with happy path and validation tests
+- [x] Fix protobuf configuration and KSP build errors
+  - Fixed SDK path issues in local.properties
+  - Configured protobuf plugin and source sets
+  - Created missing proto file (user_prefs.proto)
+  - Resolved KSP NonExistentClass errors
+  - Fixed compilation errors in CheckInScreen and TimelineScreen
+  - Successfully built debug APK
 
 ## In Progress
+
+## Sprint 2 Complete!
+All Sprint 2 issues (#6-#12) have been successfully implemented:
+- ✅ Material3 theme with ChatGPT's green-based color scheme
+- ✅ Navigation with animated transitions between screens
+- ✅ State management contracts for clean architecture
+- ✅ Hilt dependency injection setup
+- ✅ Full check-in flow with mood selection and notes
+- ✅ Timeline screen showing mood history
+- ✅ Espresso UI tests
+- ✅ Successfully building debug APK
 
 ## Pending Tasks
 - [ ] Create initial Android project structure

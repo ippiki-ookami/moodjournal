@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+option java_package = "com.example.moodjournal";
+option java_multiple_files = true;
+
+message UserPrefs {
+  int64 last_check_in_epoch_day = 1;
+  int32 current_streak = 2;
+  int32 longest_streak = 3;
+  bool pro_unlocked = 4;
+  bool voice_input_enabled = 5; // default = true (for #19 scaffold)
+}
