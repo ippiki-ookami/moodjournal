@@ -19,6 +19,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.time.LocalDate
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -40,14 +41,14 @@ class CheckInFlowTest {
 
     @Test
     fun checkInFlow_savesEntryAndShowsInTimeline() = runTest {
-        var savedEntryId: String? = null
+        var savedEntryDate: LocalDate? = null
         
         // Set up the CheckIn screen directly, bypassing splash and navigation
         composeTestRule.setContent {
             MoodJournalTheme {
                 CheckInScreen(
-                    onEntrySaved = { entryId ->
-                        savedEntryId = entryId
+                    onEntrySaved = { date ->
+                        savedEntryDate = date
                     }
                 )
             }
@@ -99,7 +100,7 @@ class CheckInFlowTest {
         // Verify that the entry was saved (callback was called)
         // In a full test, this would navigate to timeline, but we're just testing
         // the CheckIn screen functionality here
-        assert(savedEntryId != null) { "Entry should have been saved" }
+        assert(savedEntryDate != null) { "Entry should have been saved" }
     }
 
     @Test
