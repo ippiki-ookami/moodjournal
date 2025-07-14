@@ -71,7 +71,7 @@ fun CheckInScreen(
 
     LaunchedEffect(uiState) {
         if (uiState is CheckInUiState.Saved) {
-            onEntrySaved(uiState.entryId)
+            onEntrySaved((uiState as CheckInUiState.Saved).entryId)
             viewModel.onEvent(CheckInEvent.OnNavigateConsumed)
         }
     }

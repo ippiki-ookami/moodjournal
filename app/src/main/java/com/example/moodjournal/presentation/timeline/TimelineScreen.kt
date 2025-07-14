@@ -192,6 +192,7 @@ private fun getRelativeDate(date: LocalDate): String {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
 fun TimelineScreenPreview() {

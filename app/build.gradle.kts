@@ -43,6 +43,16 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    kotlin {
+        sourceSets {
+            getByName("debug") {
+                kotlin.srcDir("build/generated/source/proto/debug/java")
+            }
+            getByName("release") {
+                kotlin.srcDir("build/generated/source/proto/release/java")
+            }
+        }
+    }
     buildFeatures {
         compose = true
     }
@@ -58,12 +68,7 @@ android {
     sourceSets {
         getByName("main") {
             java {
-                srcDirs("build/generated/source/proto/main/java", "build/generated/source/proto/main/javalite")
-            }
-        }
-        getByName("debug") {
-            java {
-                srcDirs("build/generated/source/proto/debug/java", "build/generated/source/proto/debug/javalite")
+                srcDirs("build/generated/source/proto/main/java")
             }
         }
     }
@@ -76,7 +81,7 @@ protobuf {
     generateProtoTasks {
         all().forEach { task ->
             task.builtins {
-                register("java") {
+                create("java") {
                     option("lite")
                 }
             }
