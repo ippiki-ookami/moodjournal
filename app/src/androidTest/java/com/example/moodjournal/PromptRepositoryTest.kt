@@ -34,20 +34,20 @@ class PromptRepositoryTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val inputStream = context.assets.open("prompts.json")
         val content = inputStream.bufferedReader().use { it.readText() }
-        assertTrue(content.isNotEmpty(), "prompts.json should not be empty")
-        assertTrue(content.contains("prompts"), "prompts.json should contain 'prompts' key")
+        assertTrue("prompts.json should not be empty", content.isNotEmpty())
+        assertTrue("prompts.json should contain 'prompts' key", content.contains("prompts"))
     }
 
     @Test
     fun testPromptRepositoryLoadsPrompts() = runTest {
         val prompts = promptRepository.getAllPrompts()
-        assertTrue(prompts.isNotEmpty(), "Should load prompts from assets")
+        assertTrue("Should load prompts from assets", prompts.isNotEmpty())
     }
 
     @Test
     fun testGetTodayPrompt() = runTest {
         val todayPrompt = promptRepository.getTodayPrompt()
-        assertNotNull(todayPrompt, "Should return a prompt for today")
-        assertTrue(todayPrompt.text.isNotEmpty(), "Prompt text should not be empty")
+        assertNotNull("Should return a prompt for today", todayPrompt)
+        assertTrue("Prompt text should not be empty", todayPrompt.text.isNotEmpty())
     }
 }
