@@ -4,6 +4,9 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
+    plugins {
+        id("com.google.protobuf") version "0.9.4"
+    }
 }
 
 dependencyResolutionManagement {
