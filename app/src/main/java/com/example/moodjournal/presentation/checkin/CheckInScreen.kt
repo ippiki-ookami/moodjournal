@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -101,7 +102,8 @@ private fun CheckInContent(
                             imageVector = Icons.Default.Check,
                             contentDescription = "Save"
                         )
-                    }
+                    },
+                    modifier = Modifier.testTag("save_button")
                 )
             }
         }
@@ -134,7 +136,9 @@ private fun CheckInContent(
                             text = uiState.prompt.text,
                             style = MaterialTheme.typography.titleLarge,
                             textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .testTag("prompt_text")
                         )
 
                         // Mood selector
@@ -162,7 +166,8 @@ private fun CheckInContent(
                             label = { Text("Add a note (optional)") },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = 120.dp),
+                                .heightIn(min = 120.dp)
+                                .testTag("note_input"),
                             maxLines = 5
                         )
 
@@ -218,7 +223,8 @@ private fun MoodSelector(
             MoodButton(
                 emoji = emoji,
                 isSelected = selectedMood == value,
-                onClick = { onMoodSelected(value) }
+                onClick = { onMoodSelected(value) },
+                moodValue = value
             )
         }
     }
@@ -228,7 +234,8 @@ private fun MoodSelector(
 private fun MoodButton(
     emoji: String,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    moodValue: Int
 ) {
     val backgroundColor by animateColorAsState(
         targetValue = if (isSelected) {
@@ -243,7 +250,8 @@ private fun MoodButton(
         modifier = Modifier
             .size(64.dp)
             .clip(CircleShape)
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .testTag("mood_button_$moodValue"),
         color = backgroundColor,
         border = if (isSelected) {
             BorderStroke(2.dp, MaterialTheme.colorScheme.primary)

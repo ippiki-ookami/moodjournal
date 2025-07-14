@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -98,6 +99,7 @@ private fun EmptyState() {
 @Composable
 private fun EntryList(entries: List<Entry>) {
     LazyColumn(
+        modifier = Modifier.testTag("timeline_list"),
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -140,7 +142,8 @@ private fun EntryRow(entry: Entry) {
                     text = if (entry.note.isBlank()) "No note" else entry.note.take(40),
                     style = MaterialTheme.typography.bodyLarge,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.testTag("entry_note_${entry.date}")
                 )
                 Text(
                     text = getRelativeDate(entry.date),
