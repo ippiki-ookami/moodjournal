@@ -58,7 +58,12 @@ android {
     sourceSets {
         getByName("main") {
             java {
-                srcDirs("build/generated/source/proto/main/java")
+                srcDirs("build/generated/source/proto/main/java", "build/generated/source/proto/main/javalite")
+            }
+        }
+        getByName("debug") {
+            java {
+                srcDirs("build/generated/source/proto/debug/java", "build/generated/source/proto/debug/javalite")
             }
         }
     }
@@ -71,7 +76,7 @@ protobuf {
     generateProtoTasks {
         all().forEach { task ->
             task.builtins {
-                create("java") {
+                register("java") {
                     option("lite")
                 }
             }
