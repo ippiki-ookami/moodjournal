@@ -21,12 +21,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.MicOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -39,33 +42,79 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.moodjournal.MainActivity
 import com.example.moodjournal.data.Prompt
 import com.example.moodjournal.ui.theme.MoodJournalTheme
+import com.example.moodjournal.voice.DictationManager
+import com.example.moodjournal.voice.DictationState
+import com.example.moodjournal.voice.VoicePermissionManager
+import com.example.moodjournal.voice.VoicePrefsManager
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
 fun CheckInScreen(
     onEntrySaved: (LocalDate) -> Unit,
-    viewModel: CheckInViewModel = hiltViewModel()
+    viewModel: CheckInViewModel = hiltViewModel(),
+    dictationManager: DictationManager = hiltViewModel(),
+    voicePermissionManager: VoicePermissionManager = hiltViewModel(),
+    voicePrefsManager: VoicePrefsManager = hiltViewModel()
 ) {
+    val context = LocalContext.current
+    val activity = context as? MainActivity
+    val scope = rememberCoroutineScope()
+    
+    // Register permission launcher when activity is available
+    LaunchedEffect(activity) {
+        activity?.let {
+            voicePermissionManager.registerPermissionLauncher(it)
+        }
+    }
     val uiState by viewModel.uiState.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val dictationState by dictationManager.state.collectAsState()
+    val isVoiceInputEnabled by voicePrefsManager.isVoiceInputEnabled.collectAsState(initial = true)
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(errorMessage) {
         errorMessage?.let {
             snackbarHostState.showSnackbar(it)
             viewModel.clearError()
+        }
+    }
+    
+    // Handle dictation state changes
+    LaunchedEffect(dictationState) {
+        when (dictationState) {
+            is DictationState.Error -> {
+                snackbarHostState.showSnackbar("Voice input error: ${dictationState.reason}")
+                dictationManager.clearError()
+            }
+            is DictationState.Result -> {
+                // Append the result to the current note
+                val currentNote = if (uiState is CheckInUiState.Ready) uiState.note else ""
+                val newNote = if (currentNote.isBlank()) {
+                    dictationState.text
+                } else {
+                    "$currentNote ${dictationState.text}"
+                }
+                viewModel.onEvent(CheckInEvent.OnNoteChanged(newNote))
+                // Reset to idle after processing result
+                dictationManager.stopListening()
+            }
+            else -> { /* No action needed for Idle or Listening */ }
         }
     }
 
@@ -79,6 +128,23 @@ fun CheckInScreen(
     CheckInContent(
         uiState = uiState,
         onEvent = viewModel::onEvent,
+        dictationState = dictationState,
+        isVoiceInputEnabled = isVoiceInputEnabled,
+        onMicClick = {
+            scope.launch {
+                if (dictationState is DictationState.Listening) {
+                    dictationManager.stopListening()
+                } else {
+                    activity?.let { act ->
+                        if (voicePermissionManager.ensureMicPermission(act)) {
+                            dictationManager.startListening()
+                        } else {
+                            snackbarHostState.showSnackbar("Enable microphone in Settings")
+                        }
+                    }
+                }
+            }
+        },
         snackbarHostState = snackbarHostState
     )
 }
@@ -88,6 +154,9 @@ fun CheckInScreen(
 private fun CheckInContent(
     uiState: CheckInUiState,
     onEvent: (CheckInEvent) -> Unit,
+    dictationState: DictationState,
+    isVoiceInputEnabled: Boolean,
+    onMicClick: () -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     Scaffold(
@@ -157,17 +226,50 @@ private fun CheckInContent(
                             )
                         }
 
-                        // Note input
+                        // Note input with optional mic button
                         OutlinedTextField(
                             value = uiState.note,
                             onValueChange = { text ->
                                 onEvent(CheckInEvent.OnNoteChanged(text))
                             },
                             label = { Text("Add a note (optional)") },
+                            trailingIcon = if (isVoiceInputEnabled) {
+                                {
+                                    IconButton(
+                                        onClick = onMicClick,
+                                        modifier = Modifier.testTag("mic_button")
+                                    ) {
+                                        Icon(
+                                            imageVector = if (dictationState is DictationState.Listening) {
+                                                Icons.Default.MicOff
+                                            } else {
+                                                Icons.Default.Mic
+                                            },
+                                            contentDescription = if (dictationState is DictationState.Listening) {
+                                                "Stop recording"
+                                            } else {
+                                                "Start voice input"
+                                            },
+                                            tint = if (dictationState is DictationState.Listening) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                MaterialTheme.colorScheme.onSurfaceVariant
+                                            }
+                                        )
+                                    }
+                                }
+                            } else null,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(min = 120.dp)
-                                .testTag("note_input"),
+                                .testTag("note_input")
+                                .let { mod ->
+                                    if (dictationState is DictationState.Listening) {
+                                        mod.clip(MaterialTheme.shapes.small)
+                                    } else {
+                                        mod
+                                    }
+                                },
                             maxLines = 5
                         )
 
@@ -327,6 +429,9 @@ fun CheckInScreenPreview() {
                 tags = listOf("grateful", "happy")
             ),
             onEvent = {},
+            dictationState = DictationState.Idle,
+            isVoiceInputEnabled = true,
+            onMicClick = {},
             snackbarHostState = remember { SnackbarHostState() }
         )
     }
@@ -348,6 +453,9 @@ fun CheckInScreenDarkPreview() {
                 tags = emptyList()
             ),
             onEvent = {},
+            dictationState = DictationState.Listening,
+            isVoiceInputEnabled = true,
+            onMicClick = {},
             snackbarHostState = remember { SnackbarHostState() }
         )
     }
