@@ -4,12 +4,15 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jlleitschuh.gradle.ktlint")
     id("io.gitlab.arturbosch.detekt")
+    id("com.google.dagger.hilt.android")
+    id("com.google.protobuf") version "0.9.4"
+    kotlin("plugin.serialization") version "1.9.24"
 }
 
 android {
     namespace = "com.example.moodjournal"
     compileSdk = 35
-    buildToolsVersion = "36.0.0"
+    buildToolsVersion = "35.0.1"
 
     defaultConfig {
         applicationId = "com.example.moodjournal"
@@ -18,7 +21,7 @@ android {
         versionCode = 1
         versionName = "0.0.1-alpha01"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.moodjournal.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -40,6 +43,16 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+    kotlin {
+        sourceSets {
+            getByName("debug") {
+                kotlin.srcDir("build/generated/source/proto/debug/java")
+            }
+            getByName("release") {
+                kotlin.srcDir("build/generated/source/proto/release/java")
+            }
+        }
+    }
     buildFeatures {
         compose = true
     }
@@ -49,6 +62,29 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+    
+    sourceSets {
+        getByName("main") {
+            java {
+                srcDirs("build/generated/source/proto/main/java")
+            }
+        }
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.1"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
         }
     }
 }
@@ -65,6 +101,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Room
     implementation("androidx.room:room-runtime:2.6.1")
@@ -75,15 +112,29 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.datastore:datastore:1.1.1")
 
+    // Protobuf
+    implementation("com.google.protobuf:protobuf-javalite:3.25.1")
+
+    // Kotlinx Serialization (for prompts.json parsing)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
     // MPAndroidChart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.51")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    ksp("com.google.dagger:hilt-compiler:2.51")
 
     // Testing
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.6.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2025.05.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51")
+    kspAndroidTest("com.google.dagger:hilt-compiler:2.51")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
@@ -109,4 +160,14 @@ detekt {
 tasks.named("check") {
     dependsOn("ktlintCheck")
     dependsOn("detekt")
+}
+
+// Ensure protobuf runs before KSP
+afterEvaluate {
+    tasks.named("kspDebugKotlin") {
+        dependsOn("generateDebugProto")
+    }
+    tasks.named("kspReleaseKotlin") {
+        dependsOn("generateReleaseProto")
+    }
 }

@@ -1,0 +1,54 @@
+{
+  "prompts": [
+    {
+      "id": "001",
+      "text": "What made you smile today?",
+      "pack": "base"
+    },
+    {
+      "id": "002",
+      "text": "How did you take care of yourself today?",
+      "pack": "base"
+    },
+    {
+      "id": "003",
+      "text": "What are you grateful for right now?",
+      "pack": "base"
+    },
+    {
+      "id": "004",
+      "text": "How are you feeling in this moment?",
+      "pack": "base"
+    },
+    {
+      "id": "005",
+      "text": "What challenged you today and how did you handle it?",
+      "pack": "base"
+    },
+    {
+      "id": "006",
+      "text": "What brought you peace today?",
+      "pack": "base"
+    },
+    {
+      "id": "007",
+      "text": "What did you learn about yourself today?",
+      "pack": "base"
+    },
+    {
+      "id": "008",
+      "text": "How did you show kindness today?",
+      "pack": "base"
+    },
+    {
+      "id": "009",
+      "text": "What energy are you carrying right now?",
+      "pack": "base"
+    },
+    {
+      "id": "010",
+      "text": "What would make tomorrow even better?",
+      "pack": "base"
+    }
+  ]
+}

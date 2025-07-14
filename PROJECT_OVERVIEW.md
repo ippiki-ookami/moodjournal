@@ -1,5 +1,5 @@
 # Mood Journal — Project Overview
-_Last updated: <!-- yyyy‑mm‑dd -->_
+_Last updated: 2025-07-15_
 
 ## 1 Purpose
 Provide a **privacy‑first, prompt‑driven mood journal** that lets users check in < 30 seconds a day, see trends, and share “Mood Wraps,” all without storing personal text in the cloud.
@@ -35,7 +35,8 @@ Provide a **privacy‑first, prompt‑driven mood journal** that lets users chec
 | Version | Planned Date | Theme |
 | ------- | ------------ | ----- |
 | `0.1.x` | Internal alphas | Skeleton & data layer |
-| `0.3.x` | Closed‑alpha | Check‑in + timeline |
+| `0.2.x` | **Sprint 2 ✅** | Material3 + Espresso tests |
+| `0.3.x` | **Sprint 3** | Voice Mode MVP |
 | `0.5.x` | Open testing | Monetisation & export |
 | `1.0.0` | Public launch | Polished MVP |
 | `1.1+`  | Q4‑2025 | PDF reports, on‑device AI tagging |
@@ -43,7 +44,7 @@ Provide a **privacy‑first, prompt‑driven mood journal** that lets users chec
 ## 7 Key Links
 * **Design Kanban:** GitHub Projects → _Mood Journal – Roadmap_  
 * **Figma (UI drafts):** _TBD_  
-* **CI status badge:** ![CI](../../actions/workflows/android.yml/badge.svg)
+* **CI status badge:** ![CI](https://github.com/ippiki-ookami/moodjournal/actions/workflows/android.yml/badge.svg)
 
 ---
 
