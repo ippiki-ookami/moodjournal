@@ -1,5 +1,7 @@
 # Mood Journal
 
+![CI](https://github.com/ippiki-ookami/moodjournal/actions/workflows/android.yml/badge.svg)
+
 A privacy-first mood tracking Android app built with Kotlin and Jetpack Compose.
 
 ## Features (Planned)

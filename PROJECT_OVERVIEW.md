@@ -43,7 +43,7 @@ Provide a **privacy‑first, prompt‑driven mood journal** that lets users chec
 ## 7 Key Links
 * **Design Kanban:** GitHub Projects → _Mood Journal – Roadmap_  
 * **Figma (UI drafts):** _TBD_  
-* **CI status badge:** ![CI](../../actions/workflows/android.yml/badge.svg)
+* **CI status badge:** ![CI](https://github.com/ippiki-ookami/moodjournal/actions/workflows/android.yml/badge.svg)
 
 ---
 
