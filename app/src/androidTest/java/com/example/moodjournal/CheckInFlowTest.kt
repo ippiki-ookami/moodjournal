@@ -32,8 +32,15 @@ class CheckInFlowTest {
 
     @Test
     fun checkInFlow_savesEntryAndShowsInTimeline() = runTest {
-        // Wait for splash screen to pass
-        Thread.sleep(2000)
+        // Wait for splash screen to pass and check-in screen to appear
+        composeTestRule.waitForIdle()
+        
+        // Wait for the prompt text to appear (indicates we're on check-in screen)
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule
+                .onNodeWithTag("prompt_text")
+                .fetchSemanticsNode().let { true }
+        }
 
         // Verify we're on the check-in screen by looking for a prompt
         composeTestRule
@@ -57,8 +64,15 @@ class CheckInFlowTest {
             .assertIsDisplayed()
             .performClick()
 
-        // Wait for navigation
-        Thread.sleep(1000)
+        // Wait for navigation to timeline
+        composeTestRule.waitForIdle()
+        
+        // Wait for Timeline header to appear
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule
+                .onNodeWithText("Timeline")
+                .fetchSemanticsNode().let { true }
+        }
 
         // Verify we're on timeline screen
         composeTestRule
@@ -73,8 +87,15 @@ class CheckInFlowTest {
 
     @Test
     fun checkInFlow_requiresMoodBeforeSaving() = runTest {
-        // Wait for splash screen
-        Thread.sleep(2000)
+        // Wait for splash screen to pass and check-in screen to appear
+        composeTestRule.waitForIdle()
+        
+        // Wait for the note input to be available (indicates we're on check-in screen)
+        composeTestRule.waitUntil(timeoutMillis = 5000) {
+            composeTestRule
+                .onNodeWithTag("note_input")
+                .fetchSemanticsNode().let { true }
+        }
 
         // Type note without selecting mood
         composeTestRule
