@@ -153,6 +153,11 @@ tasks.named("check") {
 }
 
 // Ensure protobuf runs before KSP
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    dependsOn("generateProto")
+afterEvaluate {
+    tasks.named("kspDebugKotlin") {
+        dependsOn("generateDebugProto")
+    }
+    tasks.named("kspReleaseKotlin") {
+        dependsOn("generateReleaseProto")
+    }
 }
