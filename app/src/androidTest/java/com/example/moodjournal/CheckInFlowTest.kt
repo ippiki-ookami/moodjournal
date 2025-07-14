@@ -6,6 +6,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.printToLog
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -35,12 +36,29 @@ class CheckInFlowTest {
         // Wait for splash screen to pass and check-in screen to appear
         composeTestRule.waitForIdle()
         
-        // Wait for the prompt text to appear (indicates we're on check-in screen)
-        composeTestRule.waitUntil(timeoutMillis = 5000) {
-            composeTestRule
-                .onNodeWithTag("prompt_text")
-                .fetchSemanticsNode().let { true }
+        // First wait for splash to complete (1500ms + buffer)
+        composeTestRule.waitUntil(timeoutMillis = 10000) {
+            try {
+                composeTestRule
+                    .onNodeWithTag("prompt_text")
+                    .fetchSemanticsNode()
+                true
+            } catch (e: Exception) {
+                // Check if we're still on splash or in error state
+                try {
+                    // Look for any text that might indicate the current state
+                    composeTestRule.onNodeWithText("Mood Journal").fetchSemanticsNode()
+                    // Still on splash screen
+                    false
+                } catch (splashException: Exception) {
+                    // Not on splash, might be in loading or error state
+                    false
+                }
+            }
         }
+
+        // Print the current UI tree for debugging
+        composeTestRule.onRoot().printToLog("CheckInTest")
 
         // Verify we're on the check-in screen by looking for a prompt
         composeTestRule
