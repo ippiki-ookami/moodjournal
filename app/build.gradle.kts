@@ -9,7 +9,7 @@ plugins {
 android {
     namespace = "com.example.moodjournal"
     compileSdk = 35
-    buildToolsVersion = "36.0.0"
+    buildToolsVersion = "35.0.1"
 
     defaultConfig {
         applicationId = "com.example.moodjournal"
