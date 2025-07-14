@@ -5,6 +5,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
     id("io.gitlab.arturbosch.detekt")
     id("com.google.dagger.hilt.android")
+    id("com.google.protobuf") version "0.9.4"
     kotlin("plugin.serialization") version "1.9.24"
 }
 
@@ -55,6 +56,21 @@ android {
     }
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.1"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     // Core Android dependencies
     implementation("androidx.core:core-ktx:1.13.1")
@@ -77,6 +93,9 @@ dependencies {
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.datastore:datastore:1.1.1")
+    
+    // Protobuf
+    implementation("com.google.protobuf:protobuf-javalite:3.25.1")
 
     // Kotlinx Serialization (for prompts.json parsing)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
