@@ -44,8 +44,10 @@ fun RootNavHost(
             exitTransition = { slideOutHorizontally(targetOffsetX = { -it }) }
         ) {
             CheckInScreen(
-                navigateToTimeline = {
-                    navController.navigate(NavRoutes.Timeline.route)
+                onEntrySaved = { entryId ->
+                    navController.navigate(NavRoutes.Timeline.route) {
+                        popUpTo(NavRoutes.CheckIn.route) { inclusive = false }
+                    }
                 }
             )
         }
