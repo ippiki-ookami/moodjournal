@@ -29,6 +29,13 @@
 
 ## In Progress
 
+## Sprint 1 Tasks (Data Backbone & Prompt Assets)
+- [ ] Issue #1: Generate 365 curated prompts JSON
+- [ ] Issue #2: Implement Entry entity, Dao, and JSON tag converter
+- [ ] Issue #3: Add Proto DataStore for streak metrics & pro unlock
+- [ ] Issue #4: Wire Data Layer into DI (optional)
+- [ ] Issue #5: Enable branch protection & add CI badge
+
 ## Pending Tasks
 - [ ] Create initial Android project structure
 - [ ] Set up basic project configuration (Gradle, dependencies)
