@@ -18,7 +18,10 @@ import javax.inject.Inject
 @RunWith(AndroidJUnit4::class)
 class PromptRepositoryTest {
 
-    @get:Rule
+    @get:Rule(order = 0)
+    val mainDispatcherRule = MainDispatcherRule()
+
+    @get:Rule(order = 1)
     var hiltRule = HiltAndroidRule(this)
 
     @Inject

@@ -22,9 +22,12 @@ import org.junit.runner.RunWith
 class CheckInFlowTest {
 
     @get:Rule(order = 0)
-    var hiltRule = HiltAndroidRule(this)
+    val mainDispatcherRule = MainDispatcherRule()
 
     @get:Rule(order = 1)
+    var hiltRule = HiltAndroidRule(this)
+
+    @get:Rule(order = 2)
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Before

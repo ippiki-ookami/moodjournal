@@ -7,12 +7,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.moodjournal.presentation.checkin.CheckInScreen
 import com.example.moodjournal.presentation.splash.SplashScreen
+import com.example.moodjournal.presentation.splash.SplashViewModel
 import com.example.moodjournal.presentation.timeline.TimelineScreen
 
 @Composable
@@ -29,12 +31,14 @@ fun RootNavHost(
             route = NavRoutes.Splash.route,
             exitTransition = { fadeOut() }
         ) {
+            val splashViewModel: SplashViewModel = hiltViewModel()
             SplashScreen(
                 navigateToCheckIn = {
                     navController.navigate(NavRoutes.CheckIn.route) {
                         popUpTo(NavRoutes.Splash.route) { inclusive = true }
                     }
-                }
+                },
+                delayMs = splashViewModel.splashDelayMs
             )
         }
 

@@ -13,10 +13,11 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
-    navigateToCheckIn: () -> Unit
+    navigateToCheckIn: () -> Unit,
+    delayMs: Long = 1500L
 ) {
     LaunchedEffect(Unit) {
-        delay(1500)
+        delay(delayMs)
         navigateToCheckIn()
     }
 

@@ -14,6 +14,7 @@ import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -45,4 +46,8 @@ object TestAppModule {
             produceFile = { context.dataStoreFile("test_user_prefs.pb") }
         )
     }
+
+    @Provides
+    @Named("splashDelayMs")
+    fun provideTestSplashDelay(): Long = 0L
 }
