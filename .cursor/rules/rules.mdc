@@ -5,202 +5,60 @@ alwaysApply: true
 ---
 # Project Guidelines and Rules
 
-This document contains all project guidelines and rules for AI agents working on this codebase.
+This document aggregates all the individual guideline files into a single reference. It preserves the original content and structure from each source file, organized by their original filenames for easy reference. Sections are grouped thematically where possible, but maintain fidelity to the source material.
 
-## Core Principles
+## Task List Management (from task-list.mdc)
 
-### Do What's Asked
-- Do what has been asked; nothing more, nothing less
-- NEVER create files unless absolutely necessary for achieving your goal
-- ALWAYS prefer editing an existing file to creating a new one
-- NEVER proactively create documentation files (*.md) or README files unless explicitly requested
+You work in collaboration with other AI agents (e.g., Claude Code). To ensure there is no confusion and to keep all agents always up-to-date, please make sure to always check TASK_LIST.md to see what has been done since the last time, and update it with any new tasks before working on those tasks.
 
-### Single Feature Focus
-- Only work on one feature at a time
-- Always commit changes whenever you update code
-- Write well-documented code (self-documenting or commented)
-- Explain decisions thoroughly to the user
+Each task should either have a checked or unchecked box. A task can have subtasks if so desired, and notes can be assigned to both finished and unfinished tasks if desired (for example future considerations, or why a task needs to be come back to later, etc.). If found to be necessary or beneficial, if a long explanation/detail is warranted, you may create a new .md file and reference it in as a note in the associated task, to keep TASK_LIST.md from getting too bloated.
 
-## Task List Management
+You may remove/delete ONLY unfinished tasks, if we decide that those tasks no longer need to be completed or are no longer applicable.
 
-### Single Source of Truth
-- Always check `TASK_LIST.md` before starting work and update it with any new tasks
-- `TASK_LIST.md` is the single source of truth for all work items
-- Never invent hidden TODOs or work on unlisted items
+In order to be able to keep track of order of items completed, please keep all completed items at the top, appending any new completed tasks to the bottom of the completed list. That way, if let's say an error or something arose after a change, we can easily see what recent items may have induced the problem.
 
-### Task Structure
-- Each task should have a checked or unchecked box
-- Tasks can have subtasks and notes for both finished and unfinished tasks
-- For long explanations, create a separate `.md` file and reference it in the task
-- You may only remove/delete unfinished tasks if they are no longer applicable
+Keeping track of this task list also ensures that it's always easy for you to come back and recenter yourself if you lose focus on what tasks are still left to be done.
 
-### Task Ordering
-- Keep all completed items at the top of the list
-- Append new completed tasks to the bottom of the completed section (chronological order: oldest → newest)
-- Maintain three-section structure: "In Progress" → "Future" → "Completed"
-- Never reorder completed tasks unless correcting an error
+Also, if a task points to another task list, there is no need to add the tasks located in the separate task list to TASK_LIST.md
 
-### Task Updates
-- Move item to "In Progress" before starting work
-- Update `TASK_LIST.md` in the same commit as the completed work
-- Include detailed descriptions of what was accomplished
-- Reference specific files, features, or technical details
+## General Rules (from general-rule.mdc)
 
-## Feature Regression Prevention
+### Rules to Follow
+- You must always commit your changes whenever you update code.
+- You must always try and write code that is well documented. (self or commented is fine)
+- You must only work on a single feature at a time.
+- You must explain your decisions thoroughly to the user.
 
-### No Feature Regression Rule
-Never delete, rename, or materially alter existing classes, routes, tests, or UI elements unless:
-- a) The change is explicitly listed in `TASK_LIST.md` under "In Progress", AND
-- b) A replacement of equal or greater capability ships in the same commit
+## Change Rules (from change-rule.mdc)
 
-### Change Impact Assessment
-If carrying out a change would alter the structure or function of existing functionality:
-- Verify before making the change
-- Explain what and how the change would impact existing functionality
-- Provide solutions to ensure modifications don't break working functionality
+If carrying out a change would change the structure or possible function of something already existing and in-place, please verify before making the change, explaining what and how the change would impact, and what we can do to ensure whatever modifications don't break any already working functionality.
 
-### Escalation Process
-If unsure whether a change is a regression or impacts existing functionality:
-- Create a `### Cursor-Next-Help-Wanted` entry
-- Wait for feedback from another AI agent
+## Base Rules (from 00_base.mdc)
 
-### Protected Files
-These files must never be deleted and modifications require explicit user approval:
-- `TASK_LIST.md`
-- `PROJECT_OVERVIEW.md`
-- `IMPLEMENTATION_DETAILS.md`
-- `CHANGELOG.md`
-- All `.cursor/rules/*` files
-
-### Project Context Preservation
-- Never modify or remove project-specific language, privacy controls, or safety features without explicit user consent
-- Preserve the core aesthetic and nature of the UI
-- Never modify security rules, authentication flows, or user data schemas without explicit approval
-
-## Git Practices
-
-### Branching Strategy
-Work on feature or fix branches named `<type>/<descriptive-slug>` (e.g., `feat/conversation-ui`, `fix/auth-cors`)
-
-### Commit Message Format
-```
-<type>: <subject line>
-
-Body (wrap at 72 chars) explaining WHY. WHAT is visible in the diff.
-
-Updates TASK_LIST.md: [task description if applicable]
-Updates CHANGELOG.md: [changelog entry description if applicable]
-```
-
-Valid types: `feat`, `fix`, `docs`, `refactor`, `chore`, `test`, `style`
+### No Feature Regression
+Never delete, rename, or materially alter existing classes, routes, tests, or UI elements unless
+a) the change is explicitly listed in TASK_LIST.md under "In Progress", and
+b) a replacement of equal or greater capability ships in the same commit.
 
 ### Atomic Commits
-- Each commit must compile, pass basic functionality tests, and keep the app runnable
-- Never break existing features in a commit
-- Always update `TASK_LIST.md` in the same commit when completing work
+Each commit must compile, pass basic functionality tests, and keep the app runnable (e.g., run the main application file without errors) without breaking existing features.
 
-### Project Safety Commits
-Any commit affecting user privacy, authentication, or core content must include:
-- Clear explanation of privacy implications
-- Confirmation that project safety is maintained
-- Reference to relevant security considerations
+### Escalate Uncertainty
+If unsure whether a change is a regression or impacts existing functionality, create a ### Cursor-Next-Help-Wanted entry and wait for feedback from another AI agent (e.g., ChatGPT).
 
-## Testing Guidelines
+### Respect Sentinel Files
+TASK_LIST.md, PROJECT_OVERVIEW.md, IMPLEMENTATION_DETAILS.md, CHANGELOG.md, and all .cursor/rules/* files must never be deleted.
+Modifications require explicit user approval and explanation of impact.
 
-### Manual Testing Requirements
-For every new route, UI component, or authentication flow:
-- Test manually in the appropriate environment
-- Test API endpoints using relevant tools
-- Verify authentication flows work end-to-end
+### Project Context Preservation
+Never modify or remove project-specific language, privacy controls, or safety features without explicit user consent. The core aesthetic and nature of the UI must be preserved.
 
-### Pre-commit Verification
-Before every commit, verify:
-- The application starts without errors
-- Main entry points open without console errors
-- Authentication flow works (login/signup/logout)
-- No broken links or missing resources
+### Security & Authentication Integrity
+Never modify security rules, authentication flows, or user data schemas without explicit approval. These are critical for user privacy and project safety.
 
-### Project Safety Testing
-For changes affecting user data, privacy, or core content:
-- Verify user data remains private and secure
-- Test that core language remains appropriate
-- Confirm no user data leaks in logs or error messages
+## Handshake Protocol (from 10_handshake.mdc)
 
-### Future Test Structure
-When formal tests are added, create:
-- `tests/unit/` for individual component tests
-- `tests/integration/` for API endpoint tests
-- `tests/e2e/` for full user journey tests
-- `tests/security/` for privacy and authentication tests
-
-## Documentation Standards
-
-### Update Documentation on Changes
-If code, API routes, or UI changes, update related documentation in the same commit:
-- `PROJECT_OVERVIEW.md` for high-level feature changes
-- `IMPLEMENTATION_DETAILS.md` for technical architecture updates
-- Setup files for deployment or configuration changes
-- API route docstrings for endpoint modifications
-- `CHANGELOG.md` for notable changes
-
-### Documentation Requirements
-- Use clear, descriptive docstrings for all API endpoints with privacy implications
-- Keep configuration examples updated with all required environment variables
-- Include clear descriptions and security notes for sensitive configurations
-- Update architecture documentation when adding new components or modifying schemas
-
-### Project Documentation Standards
-All user-facing text, error messages, and core content must:
-- Use appropriate, non-judgmental language
-- Maintain the established tone
-- Include privacy and safety considerations
-- Reference best practices where applicable
-
-## Changelog Management
-
-### Structure
-- Maintain `[Unreleased]` section for ongoing changes
-- Use versioned sections like `[Sprint X] - YYYY-MM-DD` or `[vX.Y.Z] - YYYY-MM-DD`
-- Include subsections: `### Added`, `### Changed`, `### Deprecated`, `### Removed`, `### Fixed`, `### Security`
-
-### When to Update
-- After completing a task: Append entry under `[Unreleased]` with task ID reference
-- At sprint/milestone end: Organize `[Unreleased]` entries into new versioned section
-- In the same commit as `TASK_LIST.md` updates for completed work
-
-### Best Practices
-- Link to external resources like Keep a Changelog in file header
-- Use markdown for readability
-- Include dates in ISO format (YYYY-MM-DD)
-- Mark completions with ✅ where appropriate
-- Never remove historical entries
-
-## Module Size Guidelines
-
-### Target Size
-- Aim for modules (files) to be 500-1000 lines of code
-- Consider breaking down modules exceeding 1000 lines
-
-### When to Split
-Look for natural boundaries such as:
-- Separate concerns or functionalities
-- Different components
-- Each new module should have a clear, well-defined purpose
-
-### Signs a Module is Too Large
-- Understanding the module's purpose is difficult at a glance
-- Frequent scrolling or jumping between parts is required
-- High mental effort needed to remember context between different parts
-
-### Refactoring Process
-- Identify cohesive groups of functions, classes, or components
-- Create folders and regroup specialized features into individual modules
-- Maintain clear responsibilities and interfaces
-- Update documentation to reflect module structure changes
-
-## Handshake Protocol
-
-When needing input from another AI agent, structure the message exactly as:
+When the agent needs input from another AI (e.g., ChatGPT), structure the message exactly as:
 
 ```markdown
 ### Cursor-Summary
@@ -213,8 +71,372 @@ When needing input from another AI agent, structure the message exactly as:
 <clear questions or "none">
 ```
 
-Requirements:
-- Headings must not be changed
-- Omit `Cursor-Diff-Stat` only if no files were touched
-- Always include context about which part of the project architecture is being discussed
-- Reference relevant `TASK_LIST.md` items and their current status 
+- Headings must not be changed.
+- Omit Cursor-Diff-Stat only if no files were touched.
+- Attach large artefacts as zipped files and reference their path in Cursor-Next-Help-Wanted.
+- Always include context about which part of the project architecture or feature is being discussed.
+- Reference relevant TASK_LIST.md items and their current status.
+
+## Git Practices (from 20_git.mdc)
+
+### Branching
+Work on a feature or fix branch named <type>/<descriptive-slug> (e.g., feat/conversation-ui, fix/auth-cors).
+
+### Commit Messages
+Format:
+```
+<type>: <subject line>
+
+Body (wrap at 72 chars) explaining WHY. WHAT is visible in the diff.
+
+Updates TASK_LIST.md: [task description if applicable]
+
+Updates CHANGELOG.md: [changelog entry description if applicable]
+```
+Types: feat, fix, docs, refactor, chore, test, style
+
+### Project Safety Commits
+Any commit affecting user privacy, authentication, or core content must include:
+- Clear explanation of privacy implications
+- Confirmation that project safety is maintained
+- Reference to relevant security considerations
+
+### Always Update TASK_LIST.md
+Every commit that completes or progresses work must update TASK_LIST.md in the same commit. Move items from "In Progress" to "Completed" when work is finished.
+
+### Preserve Development History
+Never squash commits that represent significant development milestones. Keep the progression of UI refinements, backend development, and feature additions visible.
+
+## Testing Guidelines (from 30_testing.mdc)
+
+### Manual Testing Requirements
+For every new route, UI component, or authentication flow:
+- Test manually in the appropriate environment (e.g., browser for UI changes)
+- Test API endpoints using relevant tools (e.g., docs or clients)
+- Verify authentication flows work end-to-end
+
+### Pre-commit Verification
+Before every commit, verify:
+- The application starts without errors
+- Main entry points open without console errors
+- Authentication flow works (login/signup/logout)
+- No broken links or missing resources
+
+### Project Safety Testing
+For any changes affecting user data, privacy, or core content:
+- Verify user data remains private and secure
+- Test that core language remains appropriate
+- Confirm no user data leaks in logs or error messages
+
+### API Health Checks
+Always verify health endpoints return healthy status after backend changes. Test that core connections (e.g., database) are working properly.
+
+### Future Test Structure
+When formal tests are added, create:
+- tests/unit/ for individual component tests
+- tests/integration/ for API endpoint tests
+- tests/e2e/ for full user journey tests
+- tests/security/ for privacy and authentication tests
+
+## Documentation Standards (from 40_docs.mdc)
+
+### Update Docs on Change
+If code, API routes, or UI changes, update related documentation in the same commit:
+- PROJECT_OVERVIEW.md for high-level feature changes
+- IMPLEMENTATION_DETAILS.md for technical architecture updates
+- Setup files (e.g., SETUP.md) for deployment or configuration changes
+- API route docstrings for endpoint modifications
+- CHANGELOG.md for notable changes, with entries under sections like Added, Changed, Fixed
+
+### Project Documentation Standards
+All user-facing text, error messages, and core content must:
+- Use appropriate, non-judgmental language
+- Maintain the established tone
+- Include privacy and safety considerations
+- Reference best practices where applicable
+
+### Code Documentation
+Use clear, descriptive docstrings for:
+- All API endpoints with privacy implications
+- Architecture components
+- Authentication and security functions
+- Integration methods
+
+### Configuration Documentation
+Keep configuration examples (e.g., .env.example) updated with:
+- All required environment variables
+- Clear descriptions of each setting
+- Security notes for sensitive configurations
+- Setup instructions for new developers
+
+### Architecture Documentation
+Update IMPLEMENTATION_DETAILS.md when:
+- Adding new components to the architecture
+- Modifying database schemas
+- Changing authentication flows
+- Adding new features
+
+## Task List Specifics (from 50_tasklist.mdc)
+
+### Single Source of Truth
+All work items must appear in TASK_LIST.md. Never invent hidden TODOs or work on unlisted items.
+
+### State Transitions
+- Move item to "In Progress" before starting work
+- When work is complete, move it to "Completed" with detailed description
+- Always update TASK_LIST.md in the same commit as the completed work
+
+### Chronological Ordering
+- Keep "Completed" tasks ordered OLDEST → NEWEST (as noted in the file)
+- Never reorder completed tasks unless correcting an error
+- "In Progress" tasks can be reordered by priority
+- "Future Tasks" can be reorganized as priorities change
+
+### Task Descriptions
+- Include detailed descriptions of what was accomplished
+- Reference specific files, features, or technical details
+- Note any architectural decisions or project considerations
+- Include context about how the work fits into the project architecture
+
+### Structure Preservation
+- Always maintain the three-section structure: In Progress → Future → Completed
+- Never remove the chronological ordering note
+- Keep section headers consistent
+- Preserve the historical record of all completed work
+
+### Project Context
+- Include privacy and safety implications in task descriptions
+- Note any language or UI aesthetic considerations
+- Reference user experience impacts for frontend changes
+
+## Plan Synchronization (from 60_plan_sync.mdc)
+
+### Documentation Synchronization
+When major features are completed, update relevant documentation:
+- PROJECT_OVERVIEW.md for new user-facing features
+- IMPLEMENTATION_DETAILS.md for technical architecture changes
+- Setup files (e.g., SETUP.md) for deployment or configuration updates
+- CHANGELOG.md with a summary of the milestone or sprint, including task references and achievements
+
+### Architecture Tracking
+As components are implemented in the project architecture:
+- Update IMPLEMENTATION_DETAILS.md with component specifications
+- Document inter-component communication protocols
+- Track privacy and safety implications of each component
+
+### Project Feature Documentation
+When adding features:
+- Document the rationale and approach
+- Include privacy and safety considerations
+- Reference best practices or research
+- Update user-facing documentation with new capabilities
+
+### Architecture Evolution Tracking
+If core architecture changes beyond what's documented:
+- Update IMPLEMENTATION_DETAILS.md with new patterns
+- Document any breaking changes or migration requirements
+- Ensure schema changes are properly documented
+- Update API documentation for route changes
+- Add to CHANGELOG.md under Deprecated or Removed if applicable
+
+### Security & Privacy Documentation
+For any changes affecting user data or privacy:
+- Update security documentation
+- Document new privacy controls or features
+- Ensure safety measures are documented
+- Update user consent and data handling documentation
+
+### Development Milestone Tracking
+At major development milestones:
+- Update PROJECT_OVERVIEW.md with current capabilities, including a high-level summary of project state for continuity
+- Document completed vs. planned features
+- Note any scope changes or architectural decisions
+- Update deployment and setup instructions as needed
+- Create a new versioned section in CHANGELOG.md (e.g., [Sprint X] - YYYY-MM-DD) with summaries, added/fixed items, and next steps
+
+## Guidelines for Module Size
+
+### Target Module Size
+- Aim for modules (files) to be no larger than 500-1000 lines of code
+- This range is a general guideline and may vary based on the programming language and project context
+
+### When to Split
+- If a module exceeds 1000 lines, consider breaking it down into smaller, more focused modules
+
+### How to Split
+- Look for natural boundaries in the code, such as separate concerns, functionalities, or components, to guide the splitting process
+- Each new module should have a clear, well-defined purpose
+
+### Signs a Module is Too Large
+
+#### Understanding Difficulty
+- The module's purpose or functionality is hard to grasp at a glance
+
+#### Navigation Issues
+- Frequent scrolling or jumping between different parts of the file is required while working on a single task
+
+#### Cognitive Load
+- High mental effort is needed to remember the context or relationships between different parts of the code
+
+### Refactoring and Restructuring
+
+#### Identify Cohesive Groups
+- When a module becomes too large, extract cohesive groups of functions, classes, or components into separate modules
+
+#### Create Folders and Regroup If Need Be
+- For example, if a component gets too large and ends up having several specialized features, create a folder for that component and refactor it and its features into their individual code within that new folder
+
+#### Maintain Clear Responsibilities
+- Ensure each new module has a well-defined responsibility and a clear interface to interact with other parts of the codebase
+
+#### Update Documentation
+- Reflect changes in the module structure by updating relevant documentation, comments, and references to maintain clarity
+
+### Best Practices
+- **Regular Reviews**: Periodically review and refactor code to keep module sizes manageable
+- **Use Tools**: Leverage linters, code analysis tools, or IDE features to identify large or complex modules
+
+## important-instruction-reminders
+
+- Do what has been asked; nothing more, nothing less.
+- NEVER create files unless they're absolutely necessary for achieving your goal.
+- ALWAYS prefer editing an existing file to creating a new one.
+- NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.
+
+## Update Task List (Merged from CLAUDE1.md)
+
+You work in collaboration with other AI agents (e.g., Claude Code). To ensure there is no confusion and to keep all agents always up-to-date, please make sure to always check TASK_LIST.md to see what has been done since the last time, and update it with any new tasks before working on those tasks.
+
+Each task should either have a checked or unchecked box. A task can have subtasks if so desired, and notes can be assigned to both finished and unfinished tasks if desired (for example future considerations, or why a task needs to be come back to later, etc.). If found to be necessary or beneficial, if a long explanation/detail is warranted, you may create a new .md file and reference it in as a note in the associated task, to keep TASK_LIST.md from getting too bloated.
+
+You may remove/delete ONLY unfinished tasks, if we decide that those tasks no longer need to be completed or are no longer applicable.
+
+In order to be able to keep track of order of items completed, please keep all completed items at the top, appending any new completed tasks to the bottom of the completed list. That way, if let's say an error or something arose after a change, we can easily see what recent items may have induced the problem.
+
+Keeping track of this task list also ensures that it's always easy for you to come back and recenter yourself if you lose focus on what tasks are still left to be done.
+
+Also, if a task points to another task list, there is no need to add the tasks located in the separate task list to TASK_LIST.md
+
+## Guidelines for Changes (Merged from CLAUDE1.md)
+
+**IMPORTANT**: If carrying out a change would change the structure or possible function of something already existing and in-place, please verify before making the change, explaining what and how the change would impact, and what we can do to ensure whatever modifications don't break any already working functionality. This is probably one of the most important things, especially once things start getting a little more complicated, because then it'll just be a cascade of broken things that'll take endless hours of debugging, fixing, breaking something from fixing, so on and so forth.
+
+If there is any uncertainty whatsoever, package all the required info for me to send to another AI agent (e.g., ChatGPT) for confirmation/assistance.
+
+## Git and Development Workflow (Merged from CLAUDE1.md)
+
+### Branching Strategy
+Work on feature or fix branches named <type>/<descriptive-slug> (e.g., feat/conversation-ui, fix/auth-cors)
+
+### Commit Message Format
+```
+<type>: <subject line>
+
+Body (wrap at 72 chars) explaining WHY. WHAT is visible in the diff.
+
+Updates TASK_LIST.md: [task description if applicable]
+
+Updates CHANGELOG.md: [changelog entry description if applicable]
+```
+Types: feat, fix, docs, refactor, chore, test, style
+
+### Critical Commit Requirements
+- Always commit changes whenever you update code
+- Always update TASK_LIST.md in the same commit when completing work
+- Always update CHANGELOG.md in the same commit when completing notable changes, tasks, or milestones, appending entries under [Unreleased] with references to task IDs
+- Project-Specific Safety Commits: Any commit affecting user privacy, authentication, or core content must include clear explanation of privacy implications and confirmation that project-specific safety is maintained
+
+### Development Standards
+- **Single Feature Focus**: Only work on one feature at a time
+- **Well Documented Code**: Write self-documenting or commented code
+- **Explain Decisions**: Thoroughly explain your decisions to the user
+- **Atomic Commits**: Each commit must compile, pass tests, and keep the app runnable
+
+## Feature Regression Prevention (Merged from CLAUDE1.md)
+
+### No Feature Regression Rule
+Never delete, rename, or materially alter existing classes, routes, tests, or UI elements unless:
+
+a) The change is explicitly listed in TASK_LIST.md under "In Progress", and
+b) A replacement of equal or greater capability ships in the same commit
+
+### Escalation Process
+If unsure whether a change is a regression or impacts existing functionality, create a ### Cursor-Next-Help-Wanted entry and wait for feedback from another AI agent (e.g., ChatGPT)
+
+### Protected Files
+TASK_LIST.md, PROJECT_OVERVIEW.md, IMPLEMENTATION_DETAILS.md, CHANGELOG.md, and all .cursor/rules/* files must never be deleted. Modifications require explicit user approval and explanation of impact.
+
+### Project Context Preservation
+- Never modify or remove project-specific language, privacy controls, or safety features without explicit user consent
+- The core aesthetic and nature of the UI must be preserved
+- Never modify security rules, authentication flows, or user data schemas without explicit approval
+
+## Documentation Synchronization (Merged from CLAUDE1.md)
+
+### When to Update Documentation
+- After implementing new features
+- When modifying existing user workflows
+- When adding new UI components or interactions
+- When changing tier-based features or restrictions
+- When adding new error states or edge cases
+- Before major releases or when preparing for testing
+
+### Architecture Documentation
+As components are implemented in the project architecture:
+
+- Update IMPLEMENTATION_DETAILS.md with component specifications
+- Document inter-component communication protocols
+- Track privacy and safety implications of each component
+
+### Project Feature Documentation
+When adding project features:
+
+- Document the rationale and approach
+- Include privacy and safety considerations
+- Reference best practices or research
+- Update user-facing documentation with new capabilities
+- Add entries to CHANGELOG.md under appropriate sections (e.g., Added, Changed) with task references
+
+### Changelog Management
+All notable changes to the project must be documented in CHANGELOG.md. The format is based on Keep a Changelog, and the project adheres to Semantic Versioning.
+
+#### Structure
+- Maintain sections like [Unreleased] for ongoing changes, and versioned sections like [Sprint X] - YYYY-MM-DD or [vX.Y.Z] - YYYY-MM-DD for releases.
+- Subsections: ### Added, ### Changed, ### Deprecated, ### Removed, ### Fixed, ### Security, plus custom ones like ### Technical Improvements, ### Coverage Achievements, ### Infrastructure, ### Next Steps.
+
+#### When to Update CHANGELOG.md
+- After completing a task: Append a brief entry under [Unreleased] with task ID reference (e.g., #### Task #123: Feature Description - Bullet points of additions).
+- At sprint or milestone end: Organize [Unreleased] entries into a new versioned section, add summaries, achievements (e.g., test coverage), and next steps.
+- In the same commit as TASK_LIST.md updates for completed work.
+- Ensure entries are concise, reference task IDs, and cover code changes, technical improvements, infrastructure, and metrics.
+
+#### Best Practices
+- Link to external resources like Keep a Changelog in the file header.
+- Use markdown for readability (e.g., bullet points, bold for emphasis).
+- Include dates in ISO format (YYYY-MM-DD).
+- Mark completions with ✅ where appropriate.
+- Never remove historical entries; preserve the full change history.
+
+## Project Continuity Management
+
+To ensure all relevant details and implementations are tracked for easy context refresh (e.g., in case of conversation resets or new agent onboarding), maintain core documentation files as a comprehensive, self-contained record.
+
+### Key Documents for Continuity
+- **PROJECT_OVERVIEW.md**: High-level summary of features, user workflows, and current state—use as the primary "catch-up" document.
+- **IMPLEMENTATION_DETAILS.md**: Detailed technical architecture, decisions, and rationales.
+- **TASK_LIST.md**: Chronological record of all work items, with descriptions and notes.
+- **CHANGELOG.md**: Historical changes, milestones, and achievements.
+
+### When to Enhance for Continuity
+- **At task completion**: Include rationales, decisions, and implementation notes in task descriptions or referenced files.
+- **At milestones/sprints**: Add a "Project Summary" subsection to PROJECT_OVERVIEW.md recapping key details, open issues, and next priorities.
+- **During updates**: Verify docs are self-contained (e.g., explain acronyms, reference prior decisions) to allow standalone reading.
+- **If gaps are identified**: Escalate via handshake protocol for user approval to add clarifying notes, without creating new files unless requested.
+
+### Best Practices
+- Treat these docs as the single source of truth—any agent or conversation can be caught up by providing them.
+- Periodically review for completeness during regular reviews.
+- Avoid external dependencies; keep all critical info inline or referenced within the repo.
+
+### Assessment of Existing Documents
+The core documents (PROJECT_OVERVIEW.md, IMPLEMENTATION_DETAILS.md, TASK_LIST.md, CHANGELOG.md) are designed to be sufficient as a "single document" set for catching up, as they cover high-level overviews, technical details, task history, and changes. With the added continuity guidelines, agents will explicitly ensure these are comprehensive and self-contained, reducing the need for additional files. If a truly single aggregated document is desired, the user can request creation of something like PROJECT_SUMMARY.md, but per rules, agents won't proactively create it. 
