@@ -8,5 +8,4 @@ message UserPrefs {
   int32 current_streak = 2;
   int32 longest_streak = 3;
   bool pro_unlocked = 4;
-  bool voice_input_enabled = 5; // default = true (for #19 scaffold)
 }

@@ -6,9 +6,11 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import androidx.room.Room
 import com.example.moodjournal.UserPrefs
+import com.example.moodjournal.VoicePrefs
 import com.example.moodjournal.data.EntryDao
 import com.example.moodjournal.data.MoodDatabase
 import com.example.moodjournal.datastore.UserPrefsSerializer
+import com.example.moodjournal.datastore.VoicePrefsSerializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -50,4 +52,13 @@ object TestAppModule {
     @Provides
     @Named("splashDelayMs")
     fun provideTestSplashDelay(): Long = 0L
+    
+    @Provides
+    @Singleton
+    fun provideTestVoicePrefsDataStore(@ApplicationContext context: Context): DataStore<VoicePrefs> {
+        return DataStoreFactory.create(
+            serializer = VoicePrefsSerializer,
+            produceFile = { context.dataStoreFile("test_voice_prefs.pb") }
+        )
+    }
 }

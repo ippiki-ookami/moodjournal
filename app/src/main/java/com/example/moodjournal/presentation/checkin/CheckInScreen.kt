@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.MicOff
+import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -59,6 +60,7 @@ import com.example.moodjournal.data.Prompt
 import com.example.moodjournal.ui.theme.MoodJournalTheme
 import com.example.moodjournal.voice.DictationManager
 import com.example.moodjournal.voice.DictationState
+import com.example.moodjournal.voice.PromptSpeaker
 import com.example.moodjournal.voice.VoicePermissionManager
 import com.example.moodjournal.voice.VoicePrefsManager
 import kotlinx.coroutines.launch
@@ -70,7 +72,8 @@ fun CheckInScreen(
     viewModel: CheckInViewModel = hiltViewModel(),
     dictationManager: DictationManager = hiltViewModel(),
     voicePermissionManager: VoicePermissionManager = hiltViewModel(),
-    voicePrefsManager: VoicePrefsManager = hiltViewModel()
+    voicePrefsManager: VoicePrefsManager = hiltViewModel(),
+    promptSpeaker: PromptSpeaker = hiltViewModel()
 ) {
     val context = LocalContext.current
     val activity = context as? MainActivity
@@ -85,7 +88,8 @@ fun CheckInScreen(
     val uiState by viewModel.uiState.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val dictationState by dictationManager.state.collectAsState()
-    val isVoiceInputEnabled by voicePrefsManager.isVoiceInputEnabled.collectAsState(initial = true)
+    val voiceSettings by voicePrefsManager.settings.collectAsState(initial = com.example.moodjournal.voice.VoiceSettings())
+    val isSpeaking by promptSpeaker.isSpeaking.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(errorMessage) {
@@ -129,7 +133,8 @@ fun CheckInScreen(
         uiState = uiState,
         onEvent = viewModel::onEvent,
         dictationState = dictationState,
-        isVoiceInputEnabled = isVoiceInputEnabled,
+        voiceSettings = voiceSettings,
+        isSpeaking = isSpeaking,
         onMicClick = {
             scope.launch {
                 if (dictationState is DictationState.Listening) {
@@ -145,6 +150,13 @@ fun CheckInScreen(
                 }
             }
         },
+        onSpeakerClick = {
+            if (uiState is CheckInUiState.Ready && !isSpeaking) {
+                scope.launch {
+                    promptSpeaker.speak(uiState.prompt.text)
+                }
+            }
+        },
         snackbarHostState = snackbarHostState
     )
 }
@@ -155,8 +167,10 @@ private fun CheckInContent(
     uiState: CheckInUiState,
     onEvent: (CheckInEvent) -> Unit,
     dictationState: DictationState,
-    isVoiceInputEnabled: Boolean,
+    voiceSettings: com.example.moodjournal.voice.VoiceSettings,
+    isSpeaking: Boolean,
     onMicClick: () -> Unit,
+    onSpeakerClick: () -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     Scaffold(
@@ -195,20 +209,46 @@ private fun CheckInContent(
                             .padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-                        // Prompt
-                        Text(
-                            text = "Today's Prompt",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = uiState.prompt.text,
-                            style = MaterialTheme.typography.titleLarge,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .testTag("prompt_text")
-                        )
+                        // Prompt with optional speaker button
+                        Column {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Today's Prompt",
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                if (voiceSettings.promptTtsEnabled) {
+                                    IconButton(
+                                        onClick = onSpeakerClick,
+                                        enabled = !isSpeaking,
+                                        modifier = Modifier.testTag("speaker_button")
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.VolumeUp,
+                                            contentDescription = "Read prompt aloud",
+                                            tint = if (isSpeaking) {
+                                                MaterialTheme.colorScheme.primary
+                                            } else {
+                                                MaterialTheme.colorScheme.onSurfaceVariant
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = uiState.prompt.text,
+                                style = MaterialTheme.typography.titleLarge,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .testTag("prompt_text")
+                            )
+                        }
 
                         // Mood selector
                         Column {
@@ -233,7 +273,7 @@ private fun CheckInContent(
                                 onEvent(CheckInEvent.OnNoteChanged(text))
                             },
                             label = { Text("Add a note (optional)") },
-                            trailingIcon = if (isVoiceInputEnabled) {
+                            trailingIcon = if (voiceSettings.voiceInputEnabled) {
                                 {
                                     IconButton(
                                         onClick = onMicClick,
@@ -430,8 +470,10 @@ fun CheckInScreenPreview() {
             ),
             onEvent = {},
             dictationState = DictationState.Idle,
-            isVoiceInputEnabled = true,
+            voiceSettings = com.example.moodjournal.voice.VoiceSettings(),
+            isSpeaking = false,
             onMicClick = {},
+            onSpeakerClick = {},
             snackbarHostState = remember { SnackbarHostState() }
         )
     }
@@ -454,8 +496,10 @@ fun CheckInScreenDarkPreview() {
             ),
             onEvent = {},
             dictationState = DictationState.Listening,
-            isVoiceInputEnabled = true,
+            voiceSettings = com.example.moodjournal.voice.VoiceSettings(),
+            isSpeaking = false,
             onMicClick = {},
+            onSpeakerClick = {},
             snackbarHostState = remember { SnackbarHostState() }
         )
     }

@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "com.example.moodjournal";
+option java_multiple_files = true;
+
+message VoicePrefs {
+  bool prompt_tts_enabled  = 1; // default = true
+  bool voice_input_enabled = 2; // default = true
+}
