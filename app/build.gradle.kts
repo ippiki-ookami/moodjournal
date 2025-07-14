@@ -54,6 +54,14 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    
+    sourceSets {
+        getByName("main") {
+            java {
+                srcDirs("build/generated/source/proto/main/java")
+            }
+        }
+    }
 }
 
 protobuf {
@@ -142,4 +150,9 @@ detekt {
 tasks.named("check") {
     dependsOn("ktlintCheck")
     dependsOn("detekt")
+}
+
+// Ensure protobuf runs before KSP
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    dependsOn("generateProto")
 }

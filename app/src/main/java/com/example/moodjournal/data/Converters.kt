@@ -3,6 +3,7 @@ package com.example.moodjournal.data
 import androidx.room.TypeConverter
 import java.time.LocalDate
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class Converters {
