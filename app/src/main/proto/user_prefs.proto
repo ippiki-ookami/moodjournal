@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_package = "com.example.moodjournal.datastore";
+option java_multiple_files = true;
+option kotlin_package = "com.example.moodjournal.datastore";
+
+message UserPrefs {
+  // Epoch day of the last successful check‑in (LocalDate.toEpochDay()).
+  int64  last_check_in_epoch_day = 1;
+
+  // Current consecutive‑day streak.
+  int32  current_streak          = 2;
+
+  // Longest streak ever achieved.
+  int32  longest_streak          = 3;
+
+  // One‑time IAP flag: true once the user purchases "Pro".
+  bool   pro_unlocked            = 4;
+}
